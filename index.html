@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket File Reader</title>
+</head>
+<body>
+    <h1>Real-Time File Reader</h1>
+    <label for="page">Page Number:</label>
+    <input type="number" id="page" value="1">
+    <button onclick="fetchPage()">Load Page</button>
+    <pre id="output"></pre>
+
+    <script>
+        var socket = new WebSocket("ws://127.0.0.1:8000/ws/file-reader");
+
+        socket.onmessage = function(event) {
+            var data = JSON.parse(event.data);
+            document.getElementById("output").innerText = data.lines ? data.lines.join("\n") : "Error: " + data.error;
+        };
+
+        function fetchPage() {
+            var page = document.getElementById("page").value;
+            socket.send(JSON.stringify({ "page": parseInt(page) }));
+        }
+    </script>
+</body>
+</html>
